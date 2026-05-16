@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Giỏ Hàng Của Bạn</title>
+    <link rel="stylesheet" href="vendor/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .cart-container { grid-column: 1 / span 2; padding: 40px 20px; background-color: #fff; }
+        .cart-table img { width: 80px; height: 60px; object-fit: cover; border-radius: 5px; }
+        .total-price { font-size: 24px; color: #2196F3; font-weight: bold; text-align: right; margin-top: 20px; }
+        .cart-empty-msg { text-align: center; padding: 20px 0; font-size: 18px; color: #777; }
+    </style>
+</head>
+<body>
+    <header><h1>Trang Web Bán Hàng</h1></header>
+
+    <div class="cart-container container">
+        <h2 class="mb-4 text-center fw-bold">GIỎ HÀNG CỦA BẠN</h2>
+        
+        <div class="table-responsive">
+            <table class="table table-bordered align-middle cart-table">
+                <thead class="table-light text-center">
+                    <tr>
+                        <th>Hình Ảnh</th>
+                        <th>Tên Sản Phẩm</th>
+                        <th>Giá</th>
+                        <th>Số Lượng</th>
+                        <th>Tổng Cộng</th>
+                        <th>Thao Tác</th>
+                    </tr>
+                </thead>
+                <tbody id="cart-table-body">
+                    </tbody>
+            </table>
+        </div>
+
+        <div id="cart-empty" class="cart-empty-msg d-none">Giỏ hàng của bạn đang trống trơn! 🛒</div>
+
+        <div class="total-price" id="cart-total-display">Tổng tiền thanh toán: $0</div>
+
+        <div class="text-center mt-4">
+            <a href="index.html" class="btn btn-secondary me-2">← Tiếp tục mua sắm</a>
+            <button class="btn btn-danger" onclick="clearCart()">Xóa sạch giỏ hàng</button>
+        </div>
+    </div>
+
+    <div class="footer"><div class="footer-item"><p>© 2026 - Trang Web Bán Hàng</p></div></div>
+
+    <script>
+        function displayCart() {
+            let cart = JSON.parse(localStorage.getItem('shoppingCart')) || [];
+            const tableBody = document.getElementById('cart-table-body');
+            const emptyMsg = document.getElementById('cart-empty');
+            const totalDisplay = document.getElementById('cart-total-display');
+            
+            tableBody.innerHTML = '';
+            
+            if (cart.length === 0) {
+                emptyMsg.classList.remove('d-none');
+                totalDisplay.innerText = "Tổng tiền thanh toán: $0";
+                return;
+            }
+            
+            emptyMsg.classList.add('d-none');
+            let grandTotal = 0;
+
+            cart.forEach((item, index) => {
+                let itemTotal = item.price * item.quantity;
+                grandTotal += itemTotal;
+
+                tableBody.innerHTML += `
+                    <tr>
+                        <td class="text-center"><img src="${item.img}" alt="${item.name}"></td>
+                        <td class="fw-bold">${item.name}</td>
+                        <td class="text-center">$${item.price}</td>
+                        <td class="text-center">${item.quantity}</td>
+                        <td class="text-center fw-bold text-success">$${itemTotal}</td>
+                        <td class="text-center">
+                            <button class="btn btn-sm btn-outline-danger" onclick="removeItem(${index})">Xóa</button>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            totalDisplay.innerText = "Tổng tiền thanh toán: $" + grandTotal;
+        }
+
+        function removeItem(index) {
+            let cart = JSON.parse(localStorage.getItem('shoppingCart')) || [];
+            cart.splice(index, 1);
+            localStorage.setItem('shoppingCart', JSON.stringify(cart));
+            displayCart();
+        }
+
+        function clearCart() {
+            if(confirm("Bạn có chắc muốn xóa sạch giỏ hàng không?")) {
+                localStorage.removeItem('shoppingCart');
+                displayCart();
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', displayCart);
+    </script>
+</body>
+</html>

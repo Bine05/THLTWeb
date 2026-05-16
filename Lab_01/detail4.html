@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chi Tiết iPhone 15</title>
+    <link rel="stylesheet" href="vendor/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header><h1>Trang Web Bán Hàng</h1></header>
+    <nav>
+        <div class="nav-container">
+            <ul class="nav-links">
+                <li><a href="index.html">Trang Chủ</a></li>
+                <li><a href="#">Sản Phẩm</a></li>
+                <li><a href="#">Liên Hệ</a></li>
+            </ul>
+            <div class="nav-cart">
+                <a href="cart.html" class="cart-link">
+                    🛒 Giỏ Hàng <span class="badge bg-danger rounded-circle">0</span>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="detail-container">
+        <img src="https://cdn2.cellphones.com.vn/358x/media/catalog/product/i/p/iphone-15-256gb-color_4_.png?_gl=1*1gsfrep*_gcl_au*MjM0NDkyMjM1LjE3Nzg5MTM4MDM.*_ga*MTI1ODc5NTE2Mi4xNzc4OTEzODA0*_ga_QLK8WFHNK9*czE3Nzg5MjA1NTUkbzIkZzEkdDE3Nzg5MjA5NDAkajUyJGwwJGgxNDM3NjcxMjU0" alt="iPhone 15" class="detail-image">
+        <div class="detail-info">
+            <h2>iPhone 15 - Trải Nghiệm Tuyệt Hảo</h2>
+            <p class="price">Giá: $699</p>
+            <p>Thiết kế mặt lưng kính pha màu trẻ trung, cụm Dynamic Island thông minh tiện lợi cùng cổng sạc USB-C thế hệ mới đầy tiện dụng.</p>
+            <div class="detail-actions">
+                <button class="btn btn-primary rounded-pill fw-bold px-4 py-2 fs-5 btn-add-to-cart" 
+                        data-id="4" data-name="iPhone 15" data-price="699" data-img="https://cdn2.cellphones.com.vn/358x/media/catalog/product/i/p/iphone-15-256gb-color_4_.png?_gl=1*1gsfrep*_gcl_au*MjM0NDkyMjM1LjE3Nzg5MTM4MDM.*_ga*MTI1ODc5NTE2Mi4xNzc4OTEzODA0*_ga_QLK8WFHNK9*czE3Nzg5MjA1NTUkbzIkZzEkdDE3Nzg5MjA5NDAkajUyJGwwJGgxNDM3NjcxMjU0">
+                    Thêm vào giỏ hàng
+                </button>
+                <a href="index.html" class="btn btn-secondary mt-2">← Tiếp tục mua sắm</a>
+            </div>
+        </div>
+    </div>
+    <div class="footer"><div class="footer-item"><p>© 2026 - Trang Web Bán Hàng</p></div></div>
+
+    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function updateCartBadge() {
+            let cart = JSON.parse(localStorage.getItem('shoppingCart')) || [];
+            let totalItems = cart.reduce((total, item) => total + item.quantity, 0);
+            const badge = document.querySelector('.nav-cart .badge');
+            if (badge) badge.innerText = totalItems;
+        }
+        document.querySelectorAll('.btn-add-to-cart').forEach(button => {
+            button.addEventListener('click', function() {
+                let id = this.getAttribute('data-id'); let name = this.getAttribute('data-name');
+                let price = parseFloat(this.getAttribute('data-price')); let img = this.getAttribute('data-img');
+                let cart = JSON.parse(localStorage.getItem('shoppingCart')) || [];
+                let existingItem = cart.find(item => item.id === id);
+                if (existingItem) { existingItem.quantity += 1; } else { cart.push({ id, name, price, img, quantity: 1 }); }
+                localStorage.setItem('shoppingCart', JSON.stringify(cart)); updateCartBadge();
+                alert(`Đã thêm "${name}" vào giỏ hàng!`);
+            });
+        });
+        document.addEventListener('DOMContentLoaded', updateCartBadge);
+    </script>
+</body>
+</html>
