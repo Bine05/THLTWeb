@@ -1,0 +1,104 @@
+﻿/* --- CODE CŨ CỦA BẠN (GIỮ NGUYÊN HOÀN TOÀN) --- */
+html {
+    font-size: 14px;
+}
+
+@media (min-width: 768px) {
+    html {
+        font-size: 16px;
+    }
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+html {
+    position: relative;
+    min-height: 100%;
+}
+
+body {
+    margin-bottom: 60px; /* Chừa khoảng trống phía dưới cho footer */
+}
+
+
+/* --- CODE CẬP NHẬT MỚI (LÀM ĐẸP GIAO DIỆN) --- */
+
+/* Tối ưu khung nền trắng bao bọc nội dung (đã dùng trong _Layout) */
+.main-container {
+    background: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    padding: 30px;
+    margin-top: 25px;
+    margin-bottom: 50px;
+}
+
+/* Thiết kế lại bảng danh sách sản phẩm theo phong cách hiện đại */
+.table-modern {
+    border-collapse: separate;
+    border-spacing: 0;
+    width: 100%;
+    overflow: hidden;
+    border-radius: 8px;
+    border: 1px solid #dee2e6;
+}
+
+    .table-modern thead th {
+        background-color: #f8f9fa;
+        color: #495057;
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.8rem;
+        letter-spacing: 0.8px;
+        padding: 14px 16px;
+        border-bottom: 2px solid #dee2e6;
+    }
+
+    .table-modern tbody td {
+        padding: 14px 16px;
+        vertical-align: middle;
+        color: #495057;
+        border-bottom: 1px solid #efefef;
+    }
+
+    /* Hiệu ứng sáng dòng nhẹ nhàng khi rê chuột vào hàng sản phẩm */
+    .table-modern tbody tr:hover {
+        background-color: #fdfdfd;
+        transition: background-color 0.2s ease;
+    }
+
+/* Làm đẹp cho các nút chức năng nhỏ (Xem, Sửa, Xóa) */
+.btn-action {
+    padding: 6px 12px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    border-radius: 6px;
+    text-decoration: none !important;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px; /* Khoảng cách giữa Icon và Chữ */
+    transition: all 0.2s ease;
+}
+
+/* Định dạng nhãn thuộc tính trong form thêm/sửa gọn gàng hơn */
+.form-group label {
+    font-weight: 600;
+    color: #495057;
+    margin-bottom: 6px;
+}
+
+/* Định dạng cố định chiều cao ảnh chi tiết trong trang Display */
+.img-detail-gallery {
+    width: 90px;
+    height: 90px;
+    object-fit: cover;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+    .img-detail-gallery:hover {
+        transform: scale(1.05);
+    }

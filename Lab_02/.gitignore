@@ -1,0 +1,13 @@
+## Ignore Visual Studio temporary files, build results, and crashes
+.vs/
+[Bb]in/
+[Oo]bj/
+out/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+## Ignore WebBanHang images uploaded by users if you don't want to sync them
+wwwroot/images/*
+!wwwroot/images/.gitkeep

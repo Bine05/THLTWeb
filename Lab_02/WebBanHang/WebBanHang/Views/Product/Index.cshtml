@@ -1,0 +1,57 @@
+﻿@model IEnumerable<WebBanHang.Models.Product>
+
+<div class="container my-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold text-primary">Sản phẩm nổi bật</h2>
+        <a asp-controller="Product" asp-action="Add" class="btn btn-success px-4 py-2 shadow-sm">
+            <i class="bi bi-plus-circle"></i> Thêm sản phẩm mới
+        </a>
+    </div>
+
+    <div class="row">
+        @foreach (var item in Model)
+        {
+            <div class="col-md-4 col-lg-3 mb-4">
+                <div class="card h-100 shadow-sm border-0" style="transition: transform 0.2s, box-shadow 0.2s;">
+                    <div style="height: 220px; overflow: hidden; display: flex; align-items: center; justify-content: center; background-color: #f8f9fa;">
+                        <img src="@item.ImageUrl" class="card-img-top" alt="@item.Name"
+                             style="max-height: 100%; max-width: 100%; object-fit: contain; padding: 15px;">
+                    </div>
+
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title fw-bold text-truncate" title="@item.Name">@item.Name</h5>
+                        <p class="card-text text-danger fs-5 fw-bold mt-2">@item.Price.ToString("N0")đ</p>
+
+                        <div class="mt-auto">
+                            <a asp-action="AddToCart" asp-controller="Product" asp-route-id="@item.Id"
+                               class="btn btn-warning w-100 py-2 mb-3 fw-bold">
+                                <i class="bi bi-cart-plus"></i> Thêm vào giỏ
+                            </a>
+
+                            <div class="btn-group w-100" role="group">
+                                <a asp-controller="Product" asp-action="Display" asp-route-id="@item.Id" class="btn btn-outline-info btn-sm">Xem</a>
+
+                                <a asp-controller="Product" asp-action="Update" asp-route-id="@item.Id" class="btn btn-outline-warning btn-sm">Sửa</a>
+
+                                <a asp-controller="Product" asp-action="Delete" asp-route-id="@item.Id" class="btn btn-outline-danger btn-sm">Xóa</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<style>
+    .card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 30px rgba(0,0,0,0.15) !important;
+    }
+
+    .text-truncate {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+</style>

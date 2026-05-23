@@ -1,0 +1,22 @@
+﻿@model WebBanHang.Models.Product
+
+<h2>Product Details</h2>
+<div>
+    <h4>Name: @Model.Name</h4>
+    <h4>Price: @Model.Price</h4>
+    <h4>Description: @Model.Description</h4>
+
+    <!-- Hiển thị hình ảnh đại diện chính -->
+    <img src="@Model.ImageUrl" alt="Product Image" style="width: 300px; height: auto;" />
+
+    <!-- Hiển thị danh sách các hình ảnh chi tiết khác nếu có -->
+    @if (Model.ImageUrls != null)
+    {
+        foreach (var imageUrl in Model.ImageUrls)
+        {
+            <img src="@imageUrl" alt="Product Image" style="width: 300px; height: auto;" />
+        }
+    }
+</div>
+
+<a asp-action="Index">Back to List</a>
