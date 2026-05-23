@@ -1,6 +1,88 @@
-﻿@{
-    ViewData["Title"] = "Privacy Policy";
+@{
+    ViewData["Title"] = "Chính Sách Bán Hàng & Bảo Mật";
 }
-<h1>@ViewData["Title"]</h1>
 
-<p>Use this page to detail your site's privacy policy.</p>
+<div class="container py-2">
+    <div class="text-center mb-5">
+        <h2 class="fw-bold text-primary text-uppercase">@ViewData["Title"]</h2>
+        <p class="text-muted">Trải nghiệm mua sắm an tâm và tiện lợi nhất cùng WebBanHang</p>
+    </div>
+
+    <div class="row g-4">
+        <!-- Item 1 -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 border-0 shadow-sm rounded-4 text-center p-4 hover-shadow transition">
+                <div class="mb-3">
+                    <i class="bi bi-shield-check text-primary" style="font-size: 2.5rem;"></i>
+                </div>
+                <h5 class="fw-bold">Sản phẩm chính hãng</h5>
+                <p class="text-muted mb-0">Cam kết 100% hàng chính hãng, nguyên seal và đầy đủ hóa đơn.</p>
+            </div>
+        </div>
+        
+        <!-- Item 2 -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 border-0 shadow-sm rounded-4 text-center p-4 hover-shadow transition">
+                <div class="mb-3">
+                    <i class="bi bi-truck text-primary" style="font-size: 2.5rem;"></i>
+                </div>
+                <h5 class="fw-bold">Giao hàng miễn phí</h5>
+                <p class="text-muted mb-0">Giao hàng tận nơi miễn phí toàn quốc, được kiểm tra hàng trước khi thanh toán.</p>
+            </div>
+        </div>
+
+        <!-- Item 3 -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 border-0 shadow-sm rounded-4 text-center p-4 hover-shadow transition">
+                <div class="mb-3">
+                    <i class="bi bi-credit-card text-primary" style="font-size: 2.5rem;"></i>
+                </div>
+                <h5 class="fw-bold">Thanh toán tiện lợi</h5>
+                <p class="text-muted mb-0">Hỗ trợ nhiều hình thức như tiền mặt, chuyển khoản hoặc ví điện tử (MoMo, VNPAY, ZaloPay).</p>
+            </div>
+        </div>
+
+        <!-- Item 4 -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 border-0 shadow-sm rounded-4 text-center p-4 hover-shadow transition">
+                <div class="mb-3">
+                    <i class="bi bi-lock text-primary" style="font-size: 2.5rem;"></i>
+                </div>
+                <h5 class="fw-bold">Bảo mật tuyệt đối</h5>
+                <p class="text-muted mb-0">Thông tin khách hàng chỉ sử dụng nội bộ để xử lý đơn hàng và bảo hành, không chia sẻ cho bên thứ ba.</p>
+            </div>
+        </div>
+
+        <!-- Item 5 -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 border-0 shadow-sm rounded-4 text-center p-4 hover-shadow transition">
+                <div class="mb-3">
+                    <i class="bi bi-tools text-primary" style="font-size: 2.5rem;"></i>
+                </div>
+                <h5 class="fw-bold">Hỗ trợ kỹ thuật</h5>
+                <p class="text-muted mb-0">Cài đặt phần mềm, dán màn hình và vệ sinh máy miễn phí trọn đời tại cửa hàng.</p>
+            </div>
+        </div>
+
+        <!-- Item 6 -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 border-0 shadow-sm rounded-4 text-center p-4 hover-shadow transition">
+                <div class="mb-3">
+                    <i class="bi bi-arrow-counterclockwise text-primary" style="font-size: 2.5rem;"></i>
+                </div>
+                <h5 class="fw-bold">Hủy đơn & Hoàn tiền</h5>
+                <p class="text-muted mb-0">Hỗ trợ hủy đơn trước khi giao và hoàn tiền nhanh chóng trong vòng 3–5 ngày nếu có lỗi hệ thống.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .hover-shadow:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+    }
+    .transition {
+        transition: all 0.3s ease;
+    }
+</style>

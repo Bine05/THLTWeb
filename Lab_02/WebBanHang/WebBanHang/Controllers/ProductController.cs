@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc;
 using WebBanHang.Models;
 using WebBanHang.Repositories;
@@ -10,11 +10,13 @@ namespace WebBanHang.Controllers
     {
         private readonly IProductRepository _productRepository;
         private readonly ICategoryRepository _categoryRepository;
+        private readonly IWebHostEnvironment _env;
 
-        public ProductController(IProductRepository productRepository, ICategoryRepository categoryRepository)
+        public ProductController(IProductRepository productRepository, ICategoryRepository categoryRepository, IWebHostEnvironment env)
         {
             _productRepository = productRepository;
             _categoryRepository = categoryRepository;
+            _env = env;
         }
 
         // 1. Hiển thị danh sách sản phẩm
@@ -45,7 +47,7 @@ namespace WebBanHang.Controllers
 
         // 4. Xử lý Thêm sản phẩm có Upload ảnh (POST)
         [HttpPost]
-        public async Task<IActionResult> Add(Product product, IFormFile Image, List<IFormFile> imageUrls)
+        public async Task<IActionResult> Add(Product product, IFormFile? Image, List<IFormFile>? imageUrls)
         {
             if (ModelState.IsValid)
             {
@@ -73,6 +75,21 @@ namespace WebBanHang.Controllers
                 return RedirectToAction("Index", "Product");
             }
 
+            // Log validation errors and pass to view
+            var errorMessages = new List<string>();
+            foreach (var state in ModelState)
+            {
+                foreach (var error in state.Value.Errors)
+                {
+                    Console.WriteLine($"Validation Error: Key={state.Key}, Error={error.ErrorMessage}");
+                    errorMessages.Add($"{state.Key}: {error.ErrorMessage}");
+                }
+            }
+            if (errorMessages.Any())
+            {
+                TempData["ErrorMessage"] = "Vui lòng kiểm tra lại thông tin: " + string.Join("; ", errorMessages);
+            }
+
             var categories = _categoryRepository.GetAllCategories();
             ViewBag.Categories = new SelectList(categories, "Id", "Name", product.CategoryId);
             return View(product);
@@ -94,7 +111,7 @@ namespace WebBanHang.Controllers
 
         // 6. Xử lý Cập nhật sản phẩm có Upload ảnh (POST)
         [HttpPost]
-        public async Task<IActionResult> Update(Product product, IFormFile Image, List<IFormFile> imageUrls)
+        public async Task<IActionResult> Update(Product product, IFormFile? Image, List<IFormFile>? imageUrls)
         {
             if (ModelState.IsValid)
             {
@@ -165,7 +182,14 @@ namespace WebBanHang.Controllers
 
             if (!string.IsNullOrEmpty(sessionCart))
             {
-                cart = JsonSerializer.Deserialize<List<CartItem>>(sessionCart) ?? new List<CartItem>();
+                try
+                {
+                    cart = JsonSerializer.Deserialize<List<CartItem>>(sessionCart) ?? new List<CartItem>();
+                }
+                catch
+                {
+                    HttpContext.Session.Remove("Cart");
+                }
             }
 
             // 2. Tìm xem sản phẩm này đã được click thêm trước đó chưa
@@ -206,7 +230,14 @@ namespace WebBanHang.Controllers
 
             if (!string.IsNullOrEmpty(sessionCart))
             {
-                cart = JsonSerializer.Deserialize<List<CartItem>>(sessionCart) ?? new List<CartItem>();
+                try
+                {
+                    cart = JsonSerializer.Deserialize<List<CartItem>>(sessionCart) ?? new List<CartItem>();
+                }
+                catch
+                {
+                    HttpContext.Session.Remove("Cart");
+                }
             }
 
             // 2. Trả về View cùng với danh sách món hàng trong giỏ
@@ -216,12 +247,25 @@ namespace WebBanHang.Controllers
         // Hàm helper dùng chung để lưu ảnh vào thư mục wwwroot/images
         private async Task<string> SaveImage(IFormFile image)
         {
-            var savePath = Path.Combine("wwwroot/images", image.FileName);
+            var fileName = Path.GetFileName(image.FileName);
+            
+            // Xử lý trường hợp _env.WebRootPath có thể null nếu wwwroot chưa tồn tại
+            var webRootPath = _env.WebRootPath ?? Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
+            var imagesFolder = Path.Combine(webRootPath, "images");
+            
+            // Đảm bảo thư mục images tồn tại, nếu không thì tự tạo
+            if (!Directory.Exists(imagesFolder))
+            {
+                Directory.CreateDirectory(imagesFolder);
+            }
+
+            var savePath = Path.Combine(imagesFolder, fileName);
+            
             using (var fileStream = new FileStream(savePath, FileMode.Create))
             {
                 await image.CopyToAsync(fileStream);
             }
-            return "/images/" + image.FileName;
+            return "/images/" + fileName;
         }
     }
 }

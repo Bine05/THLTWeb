@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 
 namespace WebBanHang.Models
 {
@@ -9,7 +9,7 @@ namespace WebBanHang.Models
         public string Name { get; set; }
         [Range(100, 10000000000)]
         public decimal Price { get; set; }
-        public string Description { get; set; }
+        public string? Description { get; set; }
         public int CategoryId { get; set; }
 		// Các thuộc tính hiện có
 		public string? ImageUrl { get; set; } // Đường dẫn đến hình ảnh đại diện

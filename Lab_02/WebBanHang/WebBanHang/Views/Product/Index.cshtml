@@ -1,45 +1,116 @@
-﻿@model IEnumerable<WebBanHang.Models.Product>
+@model IEnumerable<WebBanHang.Models.Product>
 
 <div class="container my-5">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="fw-bold text-primary">Sản phẩm nổi bật</h2>
-        <a asp-controller="Product" asp-action="Add" class="btn btn-success px-4 py-2 shadow-sm">
-            <i class="bi bi-plus-circle"></i> Thêm sản phẩm mới
-        </a>
+    <!-- Banner Slider / Carousel -->
+    <div id="promoCarousel" class="carousel slide mb-5 shadow-sm rounded overflow-hidden" data-bs-ride="carousel">
+        <div class="carousel-indicators">
+            <button type="button" data-bs-target="#promoCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+            <button type="button" data-bs-target="#promoCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
+            <button type="button" data-bs-target="#promoCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
+        </div>
+        <div class="carousel-inner" style="background-color: #f8f9fa;">
+            <div class="carousel-item active" data-bs-interval="3000">
+                <img src="/images/P1.webp" class="d-block w-100" alt="Khuyến mãi 1" style="height: 350px; object-fit: contain;">
+            </div>
+            <div class="carousel-item" data-bs-interval="3000">
+                <img src="/images/P2.webp" class="d-block w-100" alt="Khuyến mãi 2" style="height: 350px; object-fit: contain;">
+            </div>
+            <div class="carousel-item" data-bs-interval="3000">
+                <img src="/images/P3.webp" class="d-block w-100" alt="Khuyến mãi 3" style="height: 350px; object-fit: contain;">
+            </div>
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#promoCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true" style="filter: invert(100%);"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#promoCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true" style="filter: invert(100%);"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
     </div>
 
     <div class="row">
-        @foreach (var item in Model)
-        {
-            <div class="col-md-4 col-lg-3 mb-4">
-                <div class="card h-100 shadow-sm border-0" style="transition: transform 0.2s, box-shadow 0.2s;">
-                    <div style="height: 220px; overflow: hidden; display: flex; align-items: center; justify-content: center; background-color: #f8f9fa;">
-                        <img src="@item.ImageUrl" class="card-img-top" alt="@item.Name"
-                             style="max-height: 100%; max-width: 100%; object-fit: contain; padding: 15px;">
-                    </div>
+        <!-- Cột trái chứa danh sách sản phẩm -->
+        <div class="col-lg-9 col-md-8">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="fw-bold text-primary">Sản phẩm nổi bật</h2>
+                <a asp-controller="Product" asp-action="Add" class="btn btn-primary px-4 py-2 shadow-sm">
+                    <i class="bi bi-plus-circle"></i> Thêm sản phẩm mới
+                </a>
+            </div>
 
-                    <div class="card-body d-flex flex-column">
-                        <h5 class="card-title fw-bold text-truncate" title="@item.Name">@item.Name</h5>
-                        <p class="card-text text-danger fs-5 fw-bold mt-2">@item.Price.ToString("N0")đ</p>
+            <div class="row">
+                @foreach (var item in Model)
+                {
+                    <div class="col-lg-4 col-md-6 mb-4">
+                        <div class="card h-100 shadow-sm border-0" style="transition: transform 0.2s, box-shadow 0.2s;">
+                            <div style="height: 220px; overflow: hidden; display: flex; align-items: center; justify-content: center; background-color: #f8f9fa;">
+                                <img src="@item.ImageUrl" class="card-img-top" alt="@item.Name"
+                                     style="max-height: 100%; max-width: 100%; object-fit: contain; padding: 15px;">
+                            </div>
 
-                        <div class="mt-auto">
-                            <a asp-action="AddToCart" asp-controller="Product" asp-route-id="@item.Id"
-                               class="btn btn-warning w-100 py-2 mb-3 fw-bold">
-                                <i class="bi bi-cart-plus"></i> Thêm vào giỏ
-                            </a>
+                            <div class="card-body d-flex flex-column">
+                                <h5 class="card-title fw-bold text-truncate" title="@item.Name">@item.Name</h5>
+                                <p class="card-text text-danger fs-5 fw-bold mt-2">@item.Price.ToString("N0")đ</p>
 
-                            <div class="btn-group w-100" role="group">
-                                <a asp-controller="Product" asp-action="Display" asp-route-id="@item.Id" class="btn btn-outline-info btn-sm">Xem</a>
+                                <div class="mt-auto">
+                                    <a asp-action="AddToCart" asp-controller="Product" asp-route-id="@item.Id"
+                                       class="btn btn-primary w-100 py-2 mb-3 fw-bold">
+                                        <i class="bi bi-cart-plus"></i> Thêm vào giỏ
+                                    </a>
 
-                                <a asp-controller="Product" asp-action="Update" asp-route-id="@item.Id" class="btn btn-outline-warning btn-sm">Sửa</a>
-
-                                <a asp-controller="Product" asp-action="Delete" asp-route-id="@item.Id" class="btn btn-outline-danger btn-sm">Xóa</a>
+                                    <div class="btn-group w-100" role="group">
+                                        <a asp-controller="Product" asp-action="Display" asp-route-id="@item.Id" class="btn btn-outline-info btn-sm">Xem</a>
+                                        <a asp-controller="Product" asp-action="Update" asp-route-id="@item.Id" class="btn btn-outline-warning btn-sm">Sửa</a>
+                                        <a asp-controller="Product" asp-action="Delete" asp-route-id="@item.Id" class="btn btn-outline-danger btn-sm">Xóa</a>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
+                }
+            </div>
+        </div>
+
+        <!-- Cột phải chứa mạng xã hội (Sidebar) -->
+        <div class="col-lg-3 col-md-4">
+            <div style="position: sticky; top: 20px;">
+                <div class="card shadow-sm border-0 mb-4 bg-primary text-white">
+                    <div class="card-header border-0 bg-transparent">
+                        <h5 class="fw-bold mb-0 mt-2"><i class="bi bi-share me-2"></i>Kết nối với chúng tôi</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-grid gap-3">
+                            <a href="#" class="btn btn-light text-start text-primary fw-bold px-3 py-2 shadow-sm" style="transition: all 0.2s;">
+                                <i class="bi bi-facebook fs-5 me-2 align-middle"></i> Facebook
+                            </a>
+                            <a href="#" class="btn btn-light text-start text-info fw-bold px-3 py-2 shadow-sm" style="transition: all 0.2s;">
+                                <i class="bi bi-twitter-x fs-5 me-2 align-middle"></i> Twitter
+                            </a>
+                            <a href="#" class="btn btn-light text-start text-danger fw-bold px-3 py-2 shadow-sm" style="transition: all 0.2s;">
+                                <i class="bi bi-instagram fs-5 me-2 align-middle"></i> Instagram
+                            </a>
+                            <a href="#" class="btn btn-light text-start text-primary fw-bold px-3 py-2 shadow-sm" style="transition: all 0.2s;">
+                                <i class="bi bi-linkedin fs-5 me-2 align-middle"></i> LinkedIn
+                            </a>
+                            <a href="#" class="btn btn-light text-start text-danger fw-bold px-3 py-2 shadow-sm" style="transition: all 0.2s;">
+                                <i class="bi bi-youtube fs-5 me-2 align-middle"></i> YouTube
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Thêm một banner dọc hoặc thông tin liên hệ nhỏ -->
+                <div class="card shadow-sm border-0 bg-light">
+                    <div class="card-body text-center p-4">
+                        <i class="bi bi-headset display-4 text-warning mb-3"></i>
+                        <h5 class="fw-bold">Hỗ trợ 24/7</h5>
+                        <p class="text-muted small mb-0">Gọi ngay tổng đài để được tư vấn mua hàng miễn phí.</p>
+                        <h4 class="text-danger fw-bold mt-2">1800 1234</h4>
+                    </div>
                 </div>
             </div>
-        }
+        </div>
     </div>
 </div>
 

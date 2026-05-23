@@ -1,0 +1,83 @@
+[
+  {
+    "Id": 1,
+    "Name": "Iphone 17 Pro Max",
+    "Price": 41990000,
+    "Description": "M\u1EDBi, \u0111\u1EA7y \u0111\u1EE7 ph\u1EE5 ki\u1EC7n t\u1EEB nh\u00E0 s\u1EA3n xu\u1EA5t",
+    "CategoryId": 3,
+    "ImageUrl": "/images/iphone-17-pro-max_3.webp",
+    "ImageUrls": null
+  },
+  {
+    "Id": 2,
+    "Name": "Iphone 14",
+    "Price": 13990000,
+    "Description": "Thi\u1EBFt k\u1EBF th\u1EDDi th\u01B0\u1EE3ng, camera k\u00E9p ch\u1EE5p \u0111\u00EAm xu\u1EA5t s\u1EAFc v\u00E0 chip A15 Bionic m\u01B0\u1EE3t m\u00E0.",
+    "CategoryId": 3,
+    "ImageUrl": "/images/14_1_9_2_10.webp",
+    "ImageUrls": null
+  },
+  {
+    "Id": 3,
+    "Name": "Iphone 14 Pro",
+    "Price": 22000000,
+    "Description": "\u0110\u1ED9t ph\u00E1 v\u1EDBi m\u00E0n h\u00ECnh Dynamic Island, Always-On Display v\u00E0 camera 48MP \u0111\u1EB3ng c\u1EA5p.",
+    "CategoryId": 3,
+    "ImageUrl": "/images/b_c_1_9.webp",
+    "ImageUrls": null
+  },
+  {
+    "Id": 4,
+    "Name": "Iphone 17",
+    "Price": 21990000,
+    "Description": "Th\u1EBF h\u1EC7 m\u1EDBi si\u00EAu m\u1ECFng nh\u1EB9, dung l\u01B0\u1EE3ng 256GB tho\u1EA3i m\u00E1i c\u00F9ng chip x\u1EED l\u00FD t\u1ED1i t\u00E2n.",
+    "CategoryId": 3,
+    "ImageUrl": "/images/iphone_17_256gb-3_2.webp",
+    "ImageUrls": null
+  },
+  {
+    "Id": 5,
+    "Name": "Iphine 17e",
+    "Price": 14990000,
+    "Description": "Phi\u00EAn b\u1EA3n m\u00E0u H\u1ED3ng thanh l\u1ECBch, tr\u1EBB trung v\u1EDBi th\u1EDDi l\u01B0\u1EE3ng pin b\u1EC1n b\u1EC9 c\u1EA3 ng\u00E0y.",
+    "CategoryId": 3,
+    "ImageUrl": "/images/iphone_17e_pink_1.webp",
+    "ImageUrls": null
+  },
+  {
+    "Id": 6,
+    "Name": "Iphone 16 Plus",
+    "Price": 21290000,
+    "Description": "M\u00E0n h\u00ECnh l\u1EDBn 6.7 inch, pin c\u1EF1c tr\u00E2u v\u00E0 n\u00FAt \u0111i\u1EC1u khi\u1EC3n Camera Control m\u1EDBi.",
+    "CategoryId": 3,
+    "ImageUrl": "/images/iphone-16-plus-1_1.webp",
+    "ImageUrls": null
+  },
+  {
+    "Id": 7,
+    "Name": "Oppo Find X9 Ultra",
+    "Price": 33490000,
+    "Description": "Flagship \u0111\u1EC9nh cao v\u1EDBi c\u1EE5m camera si\u00EAu zoom \u0111\u1ED3ng h\u00E0nh c\u00F9ng \u1ED1ng k\u00EDnh ngh\u1EC7 thu\u1EADt Hasselblad.",
+    "CategoryId": 3,
+    "ImageUrl": "/images/dien-thoai-oppo-find-x9-ultra-cam-8.webp",
+    "ImageUrls": null
+  },
+  {
+    "Id": 8,
+    "Name": "Samsung Galaxy Watch 8 (SM-L320)",
+    "Price": 7400000,
+    "Description": "\u0110\u1ED3ng h\u1ED3 th\u00F4ng minh cao c\u1EA5p h\u1ED7 tr\u1EE3 theo d\u00F5i s\u1EE9c kh\u1ECFe chuy\u00EAn s\u00E2u v\u00E0 luy\u1EC7n t\u1EADp th\u1EC3 thao.",
+    "CategoryId": 6,
+    "ImageUrl": "/images/sm-l320_2_.webp",
+    "ImageUrls": null
+  },
+  {
+    "Id": 9,
+    "Name": "Samsung Galaxy S26 Ultra",
+    "Price": 31399999,
+    "Description": "S\u1EE9c m\u1EA1nh t\u1ED1i th\u01B0\u1EE3ng t\u1EEB chip AI th\u1EBF h\u1EC7 m\u1EDBi c\u00F9ng camera 200MP v\u00E0 b\u00FAt S-Pen quy\u1EC1n n\u0103ng.",
+    "CategoryId": 3,
+    "ImageUrl": "/images/samsung-galaxy-s26-ultra-11.webp",
+    "ImageUrls": null
+  }
+]

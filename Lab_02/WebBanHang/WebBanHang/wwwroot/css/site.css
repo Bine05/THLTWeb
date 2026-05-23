@@ -1,4 +1,4 @@
-﻿/* --- CODE CŨ CỦA BẠN (GIỮ NGUYÊN HOÀN TOÀN) --- */
+/* --- CODE CŨ CỦA BẠN (GIỮ NGUYÊN HOÀN TOÀN) --- */
 html {
     font-size: 14px;
 }
@@ -102,3 +102,33 @@ body {
     .img-detail-gallery:hover {
         transform: scale(1.05);
     }
+
+/* --- THEME MÀU HỒNG PASTEL --- */
+:root {
+    --bs-primary: #ff6b81; /* Darker Pastel Pink */
+    --bs-primary-rgb: 255, 107, 129;
+}
+
+.bg-primary-dark {
+    background-color: #ff6b6b !important; /* Pastel Red for navbar and footer */
+}
+
+.text-primary { color: #ff6b81 !important; }
+.bg-primary { background-color: #ff6b81 !important; }
+.btn-primary { 
+    background-color: #ff6b81 !important; 
+    border-color: #ff6b81 !important; 
+    color: white !important;
+}
+.btn-primary:hover {
+    background-color: #ff4757 !important; 
+    border-color: #ff4757 !important;
+}
+.btn-outline-primary {
+    color: #ff6b81 !important;
+    border-color: #ff6b81 !important;
+}
+.btn-outline-primary:hover {
+    background-color: #ff6b81 !important;
+    color: white !important;
+}

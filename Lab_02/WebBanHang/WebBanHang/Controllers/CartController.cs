@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using WebBanHang.Models;
 using WebBanHang.Repositories;
 using WebBanHang.Session; // 🔥 ĐÃ THÊM: Dòng này giúp Controller nhận diện được GetObjectFromJson và SetObjectAsJson
@@ -65,6 +65,22 @@ namespace WebBanHang.Controllers
 
             // Quay trở lại trang trước đó người dùng đang đứng (Trang chủ danh sách sản phẩm)
             return Redirect(Request.Headers["Referer"].ToString() ?? "/");
+        }
+
+        // 3. Xóa sản phẩm khỏi giỏ hàng
+        public IActionResult RemoveFromCart(int id)
+        {
+            var cart = HttpContext.Session.GetObjectFromJson<List<CartItem>>("Cart") ?? new List<CartItem>();
+            var cartItem = cart.FirstOrDefault(c => c.ProductId == id);
+
+            if (cartItem != null)
+            {
+                cart.Remove(cartItem);
+                HttpContext.Session.SetObjectAsJson("Cart", cart);
+                TempData["SuccessMessage"] = $"Đã xóa sản phẩm khỏi giỏ hàng!";
+            }
+
+            return RedirectToAction("Index");
         }
     }
 }
