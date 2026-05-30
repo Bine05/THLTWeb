@@ -33,24 +33,26 @@ namespace WebBanHang.Repositories
             File.WriteAllText(_filePath, json);
         }
 
-        public IEnumerable<Product> GetAll()
+        public async Task<IEnumerable<Product>> GetAllAsync()
         {
-            return _products;
+            return await Task.FromResult(_products);
         }
 
-        public Product GetById(int id)
+        public async Task<Product> GetByIdAsync(int id)
         {
-            return _products.FirstOrDefault(p => p.Id == id);
+            var product = _products.FirstOrDefault(p => p.Id == id);
+            return await Task.FromResult(product!);
         }
 
-        public void Add(Product product)
+        public async Task AddAsync(Product product)
         {
             product.Id = _products.Any() ? _products.Max(p => p.Id) + 1 : 1;
             _products.Add(product);
             SaveToFile();
+            await Task.CompletedTask;
         }
 
-        public void Update(Product product)
+        public async Task UpdateAsync(Product product)
         {
             var index = _products.FindIndex(p => p.Id == product.Id);
             if (index != -1)
@@ -58,9 +60,10 @@ namespace WebBanHang.Repositories
                 _products[index] = product;
                 SaveToFile();
             }
+            await Task.CompletedTask;
         }
 
-        public void Delete(int id)
+        public async Task DeleteAsync(int id)
         {
             var product = _products.FirstOrDefault(p => p.Id == id);
             if (product != null)
@@ -68,6 +71,7 @@ namespace WebBanHang.Repositories
                 _products.Remove(product);
                 SaveToFile();
             }
+            await Task.CompletedTask;
         }
     }
 }

@@ -7,12 +7,12 @@ namespace WebBanHang.Models
         public int Id { get; set; }
         [Required, StringLength(100)]
         public string Name { get; set; }
-        [Range(100, 10000000000)]
+        [Range(0.01, 10000000000.00, ErrorMessage = "Giá sản phẩm phải lớn hơn 0 và hợp lệ.")]
         public decimal Price { get; set; }
-        public string? Description { get; set; }
+        public string Description { get; set; }
+        public string? ImageUrl { get; set; }
+        public List<ProductImage>? Images { get; set; }
         public int CategoryId { get; set; }
-		// Các thuộc tính hiện có
-		public string? ImageUrl { get; set; } // Đường dẫn đến hình ảnh đại diện
-		public List<string>? ImageUrls { get; set; } // Danh sách các hình ảnh khác
-	}
+        public Category? Category { get; set; }
+    }
 }

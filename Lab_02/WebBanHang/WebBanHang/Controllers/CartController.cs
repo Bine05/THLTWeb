@@ -25,9 +25,9 @@ namespace WebBanHang.Controllers
         }
 
         // 2. Xử lý logic Thêm vào giỏ hàng
-        public IActionResult AddToCart(int id)
+        public async Task<IActionResult> AddToCart(int id)
         {
-            var product = _productRepository.GetById(id);
+            var product = await _productRepository.GetByIdAsync(id);
             if (product == null)
             {
                 return NotFound();

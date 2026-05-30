@@ -51,7 +51,8 @@
 
                             <div class="card-body d-flex flex-column">
                                 <h5 class="card-title fw-bold text-truncate" title="@item.Name">@item.Name</h5>
-                                <p class="card-text text-danger fs-5 fw-bold mt-2">@item.Price.ToString("N0")đ</p>
+                                <p class="card-text text-danger fs-5 fw-bold mt-2 mb-1">@item.Price.ToString("N0")đ</p>
+                                <p class="card-text text-muted small mb-2"><i class="bi bi-tag-fill me-1"></i> @(item.Category?.Name ?? "N/A")</p>
 
                                 <div class="mt-auto">
                                     <a asp-action="AddToCart" asp-controller="Product" asp-route-id="@item.Id"

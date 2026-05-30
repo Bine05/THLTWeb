@@ -26,6 +26,9 @@
                     <dt class="col-sm-4">Giá bán</dt>
                     <dd class="col-sm-8 text-danger fw-bold fs-5">@Model.Price.ToString("N0")đ</dd>
 
+                    <dt class="col-sm-4">Danh mục</dt>
+                    <dd class="col-sm-8">@(Model.Category?.Name ?? "N/A")</dd>
+
                     <dt class="col-sm-4">Mô tả</dt>
                     <dd class="col-sm-8">@Model.Description</dd>
                 </dl>

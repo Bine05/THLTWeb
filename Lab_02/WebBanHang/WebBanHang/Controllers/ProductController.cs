@@ -20,16 +20,16 @@ namespace WebBanHang.Controllers
         }
 
         // 1. Hiển thị danh sách sản phẩm
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            var products = _productRepository.GetAll();
+            var products = await _productRepository.GetAllAsync();
             return View(products);
         }
 
         // 2. Xem chi tiết một sản phẩm
-        public IActionResult Display(int id)
+        public async Task<IActionResult> Display(int id)
         {
-            var product = _productRepository.GetById(id);
+            var product = await _productRepository.GetByIdAsync(id);
             if (product == null)
             {
                 return NotFound();
@@ -38,9 +38,9 @@ namespace WebBanHang.Controllers
         }
 
         // 3. Giao diện Thêm sản phẩm (GET)
-        public IActionResult Add()
+        public async Task<IActionResult> Add()
         {
-            var categories = _categoryRepository.GetAllCategories();
+            var categories = await _categoryRepository.GetAllAsync();
             ViewBag.Categories = new SelectList(categories, "Id", "Name");
             return View();
         }
@@ -60,14 +60,14 @@ namespace WebBanHang.Controllers
                 // Lưu các hình ảnh chi tiết bổ sung (nếu có)
                 if (imageUrls != null && imageUrls.Count > 0)
                 {
-                    product.ImageUrls = new List<string>();
+                    product.Images = new List<ProductImage>();
                     foreach (var file in imageUrls)
                     {
-                        product.ImageUrls.Add(await SaveImage(file));
+                        product.Images.Add(new ProductImage { Url = await SaveImage(file) });
                     }
                 }
 
-                _productRepository.Add(product);
+                await _productRepository.AddAsync(product);
 
                 // Thêm thông báo lưu thành công
                 TempData["SuccessMessage"] = "Sản phẩm đã được tạo và lưu thành công!";
@@ -90,48 +90,67 @@ namespace WebBanHang.Controllers
                 TempData["ErrorMessage"] = "Vui lòng kiểm tra lại thông tin: " + string.Join("; ", errorMessages);
             }
 
-            var categories = _categoryRepository.GetAllCategories();
+            var categories = await _categoryRepository.GetAllAsync();
             ViewBag.Categories = new SelectList(categories, "Id", "Name", product.CategoryId);
             return View(product);
         }
 
         // 5. Giao diện Cập nhật sản phẩm (GET)
-        public IActionResult Update(int id)
+        public async Task<IActionResult> Update(int id)
         {
-            var product = _productRepository.GetById(id);
+            var product = await _productRepository.GetByIdAsync(id);
             if (product == null)
             {
                 return NotFound();
             }
 
-            var categories = _categoryRepository.GetAllCategories();
+            var categories = await _categoryRepository.GetAllAsync();
             ViewBag.Categories = new SelectList(categories, "Id", "Name", product.CategoryId);
             return View(product);
         }
 
         // 6. Xử lý Cập nhật sản phẩm có Upload ảnh (POST)
         [HttpPost]
-        public async Task<IActionResult> Update(Product product, IFormFile? Image, List<IFormFile>? imageUrls)
+        public async Task<IActionResult> Update(int id, Product product, IFormFile? Image, List<IFormFile>? imageUrls)
         {
+            ModelState.Remove("ImageUrl"); // Loại bỏ xác thực ModelState cho ImageUrl
+            
+            if (id != product.Id)
+            {
+                return NotFound();
+            }
+
             if (ModelState.IsValid)
             {
+                var existingProduct = await _productRepository.GetByIdAsync(id);
+                if (existingProduct == null)
+                {
+                    return NotFound();
+                }
+
                 // Nếu người dùng chọn ảnh đại diện mới -> thay thế ảnh cũ
                 if (Image != null)
                 {
-                    product.ImageUrl = await SaveImage(Image);
+                    existingProduct.ImageUrl = await SaveImage(Image);
                 }
 
                 // Nếu người dùng chọn loạt ảnh chi tiết mới -> cập nhật lại danh sách ảnh
                 if (imageUrls != null && imageUrls.Count > 0)
                 {
-                    product.ImageUrls = new List<string>();
+                    existingProduct.Images = new List<ProductImage>();
                     foreach (var file in imageUrls)
                     {
-                        product.ImageUrls.Add(await SaveImage(file));
+                        existingProduct.Images.Add(new ProductImage { Url = await SaveImage(file) });
                     }
                 }
 
-                _productRepository.Update(product);
+                // Cập nhật các thông tin khác của sản phẩm
+                existingProduct.Name = product.Name;
+                existingProduct.Price = product.Price;
+                existingProduct.Description = product.Description;
+                existingProduct.CategoryId = product.CategoryId;
+
+                await _productRepository.UpdateAsync(existingProduct);
 
                 // Thêm thông báo sửa thành công
                 TempData["SuccessMessage"] = "Cập nhật thông tin sản phẩm thành công!";
@@ -139,15 +158,15 @@ namespace WebBanHang.Controllers
                 return RedirectToAction("Index", "Product");
             }
 
-            var categories = _categoryRepository.GetAllCategories();
+            var categories = await _categoryRepository.GetAllAsync();
             ViewBag.Categories = new SelectList(categories, "Id", "Name", product.CategoryId);
             return View(product);
         }
 
         // 7. Giao diện Xác nhận xóa (GET)
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            var product = _productRepository.GetById(id);
+            var product = await _productRepository.GetByIdAsync(id);
             if (product == null)
             {
                 return NotFound();
@@ -157,9 +176,9 @@ namespace WebBanHang.Controllers
 
         // 8. Xử lý Xóa sản phẩm (POST)
         [HttpPost, ActionName("Delete")]
-        public IActionResult DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            _productRepository.Delete(id);
+            await _productRepository.DeleteAsync(id);
 
             // Thêm thông báo xóa thành công
             TempData["SuccessMessage"] = "Đã xóa sản phẩm thành công ra khỏi hệ thống!";
@@ -168,9 +187,9 @@ namespace WebBanHang.Controllers
         }
 
         // 🔥 CHỨC NĂNG MỚI CẬP NHẬT: Xử lý logic Thêm vào giỏ hàng (AddToCart)
-        public IActionResult AddToCart(int id)
+        public async Task<IActionResult> AddToCart(int id)
         {
-            var product = _productRepository.GetById(id);
+            var product = await _productRepository.GetByIdAsync(id);
             if (product == null)
             {
                 return NotFound();

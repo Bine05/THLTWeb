@@ -18,7 +18,7 @@
                     <div class="alert alert-danger">
                         @TempData["ErrorMessage"]
                     </div>
-                }
+                }`
 
                 <form asp-action="Add" enctype="multipart/form-data">
                     <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
@@ -49,6 +49,12 @@
                     <div class="mb-3 form-group">
                         <label class="form-label fw-semibold text-dark">Hình ảnh đại diện</label>
                         <input type="file" name="Image" class="form-control" accept="image/*" />
+                    </div>
+
+                    <div class="mb-3 form-group">
+                        <label class="form-label fw-semibold text-dark">Các hình ảnh chi tiết khác</label>
+                        <input type="file" name="imageUrls" class="form-control" accept="image/*" multiple />
+                        <small class="text-muted">Bạn có thể chọn nhiều ảnh cùng lúc.</small>
                     </div>
 
                     <div class="mb-4 form-group">
