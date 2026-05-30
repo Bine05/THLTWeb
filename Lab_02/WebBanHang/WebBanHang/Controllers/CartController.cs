@@ -82,5 +82,67 @@ namespace WebBanHang.Controllers
 
             return RedirectToAction("Index");
         }
+        // 4. Trang Checkout (GET)
+        public IActionResult Checkout()
+        {
+            var cart = HttpContext.Session.GetObjectFromJson<List<CartItem>>("Cart") ?? new List<CartItem>();
+            if (!cart.Any())
+            {
+                return RedirectToAction("Index");
+            }
+            return View(new Order());
+        }
+
+        // 5. Xử lý Checkout (POST)
+        [HttpPost]
+        public async Task<IActionResult> Checkout(Order order, [FromServices] ApplicationDbContext context)
+        {
+            var cart = HttpContext.Session.GetObjectFromJson<List<CartItem>>("Cart") ?? new List<CartItem>();
+            if (!cart.Any())
+            {
+                return RedirectToAction("Index");
+            }
+
+            if (ModelState.IsValid)
+            {
+                order.OrderDate = DateTime.Now;
+                order.TotalAmount = cart.Sum(c => c.Price * c.Quantity);
+                order.OrderDetails = new List<OrderDetail>();
+
+                foreach (var item in cart)
+                {
+                    order.OrderDetails.Add(new OrderDetail
+                    {
+                        ProductId = item.ProductId,
+                        Quantity = item.Quantity,
+                        Price = item.Price
+                    });
+                }
+
+                context.Orders.Add(order);
+                await context.SaveChangesAsync();
+
+                // Xóa giỏ hàng
+                HttpContext.Session.Remove("Cart");
+
+                return RedirectToAction("Success", new { id = order.Id });
+            }
+
+            return View(order);
+        }
+
+        // 6. Trang Success
+        public async Task<IActionResult> Success(int id, [FromServices] ApplicationDbContext context)
+        {
+            var order = await context.Orders.FindAsync(id);
+            if (order == null)
+            {
+                return NotFound();
+            }
+
+            ViewBag.OrderId = id;
+            ViewBag.TotalAmount = order.TotalAmount;
+            return View();
+        }
     }
 }

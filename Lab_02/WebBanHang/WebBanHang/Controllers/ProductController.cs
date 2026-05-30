@@ -147,6 +147,8 @@ namespace WebBanHang.Controllers
                 // Cập nhật các thông tin khác của sản phẩm
                 existingProduct.Name = product.Name;
                 existingProduct.Price = product.Price;
+                existingProduct.DiscountPercentage = product.DiscountPercentage;
+                existingProduct.DiscountAmount = product.DiscountAmount;
                 existingProduct.Description = product.Description;
                 existingProduct.CategoryId = product.CategoryId;
 
@@ -215,12 +217,11 @@ namespace WebBanHang.Controllers
             var existingItem = cart.FirstOrDefault(c => c.ProductId == id);
             if (existingItem == null)
             {
-                // Nếu chưa có, tiến hành thêm mới vào list giỏ hàng
                 cart.Add(new CartItem
                 {
                     ProductId = product.Id,
                     ProductName = product.Name,
-                    Price = (decimal)product.Price, // Ép kiểu dữ liệu về decimal tính toán cho chuẩn
+                    Price = product.FinalPrice, // Tính giá cuối cùng (sau khi giảm giá nếu có)
                     ImageUrl = product.ImageUrl,
                     Quantity = 1
                 });

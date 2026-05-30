@@ -14,17 +14,18 @@ namespace WebBanHang.Repositories
 
         public async Task<IEnumerable<Product>> GetAllAsync()
         {
-            // return await _context.Products.ToListAsync();
             return await _context.Products
-                .Include(p => p.Category) // Include thông tin về category
+                .Include(p => p.Category)
+                .Include(p => p.Images) // Include thông tin hình ảnh
                 .ToListAsync();
         }
 
         public async Task<Product> GetByIdAsync(int id)
         {
-            // return await _context.Products.FindAsync(id);
-            // lấy thông tin kèm theo category
-            return await _context.Products.Include(p => p.Category).FirstOrDefaultAsync(p => p.Id == id);
+            return await _context.Products
+                .Include(p => p.Category)
+                .Include(p => p.Images) // Include thông tin hình ảnh
+                .FirstOrDefaultAsync(p => p.Id == id);
         }
 
         public async Task AddAsync(Product product)

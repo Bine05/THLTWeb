@@ -30,13 +30,33 @@
                     </div>
 
                     <div class="mb-3 form-group">
-                        <label class="form-label fw-semibold text-dark">Giá bán (động)</label>
+                        <label class="form-label fw-semibold text-dark">Giá bán gốc (VNĐ)</label>
                         <div class="input-group">
                             <input asp-for="Price" type="number" class="form-control" placeholder="Ví dụ: 15000000" />
                             <span class="input-group-text bg-light">đ</span>
                         </div>
                         <span asp-validation-for="Price" class="text-danger small"></span>
                     </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3 form-group">
+                            <label class="form-label fw-semibold text-dark">Giảm giá (%)</label>
+                            <div class="input-group">
+                                <input asp-for="DiscountPercentage" type="number" class="form-control" placeholder="0 - 100" min="0" max="100" />
+                                <span class="input-group-text bg-light">%</span>
+                            </div>
+                            <span asp-validation-for="DiscountPercentage" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6 mb-3 form-group">
+                            <label class="form-label fw-semibold text-dark">Giảm giá trực tiếp (VNĐ)</label>
+                            <div class="input-group">
+                                <input asp-for="DiscountAmount" type="number" class="form-control" placeholder="Ví dụ: 50000" min="0" />
+                                <span class="input-group-text bg-light">đ</span>
+                            </div>
+                            <span asp-validation-for="DiscountAmount" class="text-danger small"></span>
+                        </div>
+                    </div>
+                    <small class="text-muted d-block mb-3"><em>Lưu ý: Nếu nhập cả hai, hệ thống sẽ ưu tiên tính giảm giá theo %.</em></small>
 
                     <div class="mb-3 form-group">
                         <label class="form-label fw-semibold text-dark">Danh mục</label>

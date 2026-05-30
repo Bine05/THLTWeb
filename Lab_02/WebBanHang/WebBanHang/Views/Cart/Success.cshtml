@@ -1,0 +1,48 @@
+@{
+    ViewData["Title"] = "Đặt hàng thành công";
+}
+
+<div class="container my-5 text-center">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow-lg border-0 rounded-4 p-5">
+                <div class="mb-4">
+                    <i class="bi bi-check-circle-fill text-success" style="font-size: 5rem;"></i>
+                </div>
+                <h2 class="fw-bold text-success mb-3">Đặt Hàng Thành Công!</h2>
+                <p class="fs-5 text-muted mb-4">Cảm ơn bạn đã tin tưởng và mua Acc tại BINESHOP.</p>
+                
+                <div class="mb-4 text-center">
+                    <h5 class="fw-bold mb-3 text-dark">Vui lòng quét mã QR dưới đây để thanh toán:</h5>
+                    <div class="p-3 bg-white d-inline-block rounded-3 border shadow-sm">
+                        <!-- Sử dụng VietQR API để tạo mã QR động -->
+                        <img src="https://img.vietqr.io/image/MB-0987654321-compact2.png?amount=@ViewBag.TotalAmount&addInfo=ThanhToanDonHang_@ViewBag.OrderId&accountName=BINESHOP" 
+                             alt="Mã QR Thanh Toán" 
+                             style="max-width: 250px;" />
+                    </div>
+                    <div class="mt-2 text-danger fw-bold fs-4">
+                        Số tiền: @(((decimal)ViewBag.TotalAmount).ToString("N0"))đ
+                    </div>
+                </div>
+                
+                <div class="alert alert-info border-0 shadow-sm text-start mb-4">
+                    <h5 class="fw-bold"><i class="bi bi-info-circle-fill me-2"></i>Thông tin quan trọng</h5>
+                    <ul class="mb-0">
+                        <li class="mb-2">Mã đơn hàng của bạn: <strong>#@ViewBag.OrderId</strong></li>
+                        <li class="mb-2">Hệ thống đang chuẩn bị tài khoản và sẽ gửi thông tin đăng nhập (Tài khoản/Mật khẩu) qua <strong>Zalo</strong> hoặc <strong>Email</strong> của bạn trong vòng 5-10 phút tới.</li>
+                        <li>Nếu sau 15 phút chưa nhận được, vui lòng liên hệ Zalo Admin hoặc Hotline: <strong class="text-danger">1800 1234</strong>.</li>
+                    </ul>
+                </div>
+
+                <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
+                    <a asp-controller="Home" asp-action="Index" class="btn btn-primary fw-bold px-4 py-2">
+                        <i class="bi bi-house-door-fill me-1"></i> Về trang chủ
+                    </a>
+                    <a asp-controller="Product" asp-action="Index" class="btn btn-outline-primary fw-bold px-4 py-2">
+                        Tiếp tục xem Acc
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
