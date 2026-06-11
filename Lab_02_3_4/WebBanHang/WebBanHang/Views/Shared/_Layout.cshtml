@@ -1,0 +1,149 @@
+@using WebBanHang.Session
+@using WebBanHang.Models
+@{
+    var currentCart = Context.Session.GetObjectFromJson<List<CartItem>>("Cart");
+    var totalItemsInCart = currentCart != null ? currentCart.Sum(c => c.Quantity) : 0;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - BINESHOP</title>
+    <link class="content" rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/WebBanHang.styles.css" asp-append-version="true" />
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #ffe6ea; /* Hồng nhạt cho nền ngoài cùng */
+            color: #333;
+        }
+
+        .main-container {
+            background-color: #fff5f7; /* Hồng cực nhạt cho nền bên trong */
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            padding: 30px;
+            margin-top: 20px;
+            margin-bottom: 40px;
+            position: relative;
+        }
+        
+        /* Hiệu ứng sao rơi */
+        .falling-stars {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            pointer-events: none;
+            z-index: 0;
+            border-radius: inherit; /* Giữ sao không tràn ra ngoài góc bo tròn */
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="150" height="150"><text x="20" y="20" font-size="14" fill="%23ffb6c1" opacity="0.6">★</text><text x="80" y="70" font-size="12" fill="%23ffd700" opacity="0.5">✨</text><text x="120" y="40" font-size="10" fill="%23ff6b81" opacity="0.4">★</text><text x="40" y="120" font-size="16" fill="%23ffc0cb" opacity="0.7">⭐</text></svg>');
+            animation: fall 15s linear infinite;
+        }
+
+        @@keyframes fall {
+            from { background-position: 0 0; }
+            to { background-position: 0 150px; }
+        }
+
+        /* Đảm bảo nội dung nằm trên các vì sao */
+        .main-container > * {
+            position: relative;
+            z-index: 1;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-primary-dark border-bottom box-shadow mb-3">
+            <div class="container">
+                <a class="navbar-brand fw-bold text-uppercase" asp-area="" asp-controller="Home" asp-action="Index">
+                    <i class="bi bi-shop me-2 text-white"></i>BINESHOP
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    <ul class="navbar-nav flex-grow-1">
+                        <li class="nav-item">
+                            <a class="nav-link text-white fw-semibold hover-opacity" asp-area="" asp-controller="Home" asp-action="Index">Trang Chủ</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white fw-semibold hover-opacity" asp-area="" asp-controller="Product" asp-action="Index"><i class="bi bi-box me-1"></i>Quản lý sản phẩm</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white fw-semibold hover-opacity" asp-area="" asp-controller="Home" asp-action="Privacy">Chính Sách</a>
+                        </li>
+                    </ul>
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <a class="nav-link text-white fw-bold hover-opacity" asp-area="" asp-controller="Cart" asp-action="Index">
+                                <i class="bi bi-cart3 fs-5 position-relative">
+                                    @if(totalItemsInCart > 0)
+                                    {
+                                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.6rem;">
+                                            @totalItemsInCart
+                                        </span>
+                                    }
+                                </i> Giỏ Hàng
+                            </a>
+                        </li>
+                    </ul>
+                    <partial name="_LoginPartial" />
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container">
+        <main role="main" class="pb-3 main-container">
+            <div class="falling-stars"></div>
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="footer text-light bg-primary-dark py-2 mt-auto" style="font-size: 0.8rem; line-height: 1.3;">
+        <div class="container-fluid px-4">
+            <div class="row text-center text-md-start">
+                <div class="col-md-4 mb-2 mb-md-0 text-center">
+                    <strong class="text-white">Về Chúng Tôi</strong><br />
+                    Hệ thống mua bán tài khoản Liên Quân uy tín, giá rẻ.
+                </div>
+                <div class="col-md-4 mb-2 mb-md-0 text-center">
+                    <strong class="text-white">Liên Hệ</strong><br />
+                    Hotline: 1800 1234 - hotro@bineshop.com
+                </div>
+                <div class="col-md-4 text-center">
+                    <strong class="text-white">Chính Sách Bảo Hành</strong><br />
+                    Bảo hành vĩnh viễn - Đền bù 100% nếu tài khoản có lỗi.
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <script>
+            Swal.fire({
+                title: 'Thành công!',
+                text: '@Html.Raw(TempData["SuccessMessage"])', /* Sử dụng Html.Raw để hiển thị tiếng Việt chuẩn không bị lỗi kí tự */
+                icon: 'success',
+                timer: 2500, /* Tự động đóng sau 2.5 giây */
+                showConfirmButton: false,
+                background: '#ffffff',
+                iconColor: '#198754'
+            });
+        </script>
+    }
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
