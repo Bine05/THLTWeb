@@ -1,0 +1,59 @@
+@model IEnumerable<WebBanHang.Models.ApplicationUser>
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<WebBanHang.Models.ApplicationUser> UserManager
+
+@{
+    ViewData["Title"] = "Quản lý Người Dùng";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-4">
+    <h2 class="mb-4">Danh sách tài khoản</h2>
+
+    <table class="table table-bordered table-striped">
+        <thead class="table-dark">
+            <tr>
+                <th>Họ và tên</th>
+                <th>Email</th>
+                <th>SĐT</th>
+                <th>Quyền (Role)</th>
+                <th>Trạng thái</th>
+                <th>Hành động</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                var roles = await UserManager.GetRolesAsync(item);
+                <tr>
+                    <td>@item.FullName</td>
+                    <td>@item.Email</td>
+                    <td>@item.PhoneNumber</td>
+                    <td>@string.Join(", ", roles)</td>
+                    <td>
+                        @if (item.LockoutEnd != null && item.LockoutEnd > DateTimeOffset.Now)
+                        {
+                            <span class="badge bg-danger">Không hoạt động</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-success">Hoạt động</span>
+                        }
+                    </td>
+                    <td>
+                        <form asp-area="Admin" asp-controller="User" asp-action="LockUnlock" asp-route-id="@item.Id" method="post" style="display:inline;">
+                            @if (item.LockoutEnd != null && item.LockoutEnd > DateTimeOffset.Now)
+                            {
+                                <button type="submit" class="btn btn-success btn-sm">Mở Khóa</button>
+                            }
+                            else
+                            {
+                                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc chắn muốn khóa tài khoản này?');">Khóa</button>
+                            }
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

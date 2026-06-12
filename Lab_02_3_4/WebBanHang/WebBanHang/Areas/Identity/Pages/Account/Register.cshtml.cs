@@ -118,20 +118,18 @@ public class RegisterModel : PageModel
 
     public async Task OnGetAsync(string? returnUrl = null)
     {
-        if (!_roleManager.RoleExistsAsync(SD.Role_Customer).GetAwaiter().GetResult())
+        if (!_roleManager.RoleExistsAsync(SD.Role_User).GetAwaiter().GetResult())
         {
-            _roleManager.CreateAsync(new IdentityRole(SD.Role_Customer)).GetAwaiter().GetResult();
-            _roleManager.CreateAsync(new IdentityRole(SD.Role_Employee)).GetAwaiter().GetResult();
+            _roleManager.CreateAsync(new IdentityRole(SD.Role_User)).GetAwaiter().GetResult();
             _roleManager.CreateAsync(new IdentityRole(SD.Role_Admin)).GetAwaiter().GetResult();
-            _roleManager.CreateAsync(new IdentityRole(SD.Role_Company)).GetAwaiter().GetResult();
         }
         Input = new()
         {
-            RoleList = _roleManager.Roles.Select(x => x.Name).Select(i => new SelectListItem
+            RoleList = new List<SelectListItem>
             {
-                Text = i,
-                Value = i
-            })
+                new SelectListItem { Text = "User", Value = SD.Role_User },
+                new SelectListItem { Text = "Admin", Value = SD.Role_Admin }
+            }
         };
 
         ReturnUrl = returnUrl;
@@ -162,7 +160,7 @@ public class RegisterModel : PageModel
                 }
                 else
                 {
-                    await _userManager.AddToRoleAsync(user, SD.Role_Customer);
+                    await _userManager.AddToRoleAsync(user, SD.Role_User);
                 }
 
                 var userId = await _userManager.GetUserIdAsync(user);

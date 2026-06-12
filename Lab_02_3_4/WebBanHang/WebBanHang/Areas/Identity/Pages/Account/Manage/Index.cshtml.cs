@@ -10,6 +10,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using WebBanHang.Models;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Hosting;
+using System.IO;
 
 namespace WebBanHang.Areas.Identity.Pages.Account.Manage;
 
@@ -17,13 +20,16 @@ public class IndexModel : PageModel
 {
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly SignInManager<ApplicationUser> _signInManager;
+    private readonly IWebHostEnvironment _webHostEnvironment;
 
     public IndexModel(
         UserManager<ApplicationUser> userManager,
-        SignInManager<ApplicationUser> signInManager)
+        SignInManager<ApplicationUser> signInManager,
+        IWebHostEnvironment webHostEnvironment)
     {
         _userManager = userManager;
         _signInManager = signInManager;
+        _webHostEnvironment = webHostEnvironment;
     }
 
     /// <summary>
@@ -38,6 +44,8 @@ public class IndexModel : PageModel
     /// </summary>
     [TempData]
     public string? StatusMessage { get; set; }
+
+    public string? AvatarUrl { get; set; }
 
     /// <summary>
     ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
@@ -59,6 +67,13 @@ public class IndexModel : PageModel
         [Phone]
         [Display(Name = "Phone number")]
         public string? PhoneNumber { get; set; }
+
+        [Required]
+        [Display(Name = "Họ và tên")]
+        public string FullName { get; set; } = default!;
+
+        [Display(Name = "Ảnh đại diện")]
+        public IFormFile? AvatarImage { get; set; }
     }
 
     private async Task LoadAsync(ApplicationUser user)
@@ -67,10 +82,12 @@ public class IndexModel : PageModel
         var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
 
         Username = userName;
+        AvatarUrl = user.AvatarUrl;
 
         Input = new InputModel
         {
-            PhoneNumber = phoneNumber
+            PhoneNumber = phoneNumber,
+            FullName = user.FullName
         };
     }
 
@@ -109,6 +126,32 @@ public class IndexModel : PageModel
                 StatusMessage = "Unexpected error when trying to set phone number.";
                 return RedirectToPage();
             }
+        }
+
+        if (Input.FullName != user.FullName)
+        {
+            user.FullName = Input.FullName;
+            await _userManager.UpdateAsync(user);
+        }
+
+        if (Input.AvatarImage != null)
+        {
+            var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "images", "avatars");
+            if (!Directory.Exists(uploadsFolder))
+            {
+                Directory.CreateDirectory(uploadsFolder);
+            }
+
+            var uniqueFileName = Guid.NewGuid().ToString() + "_" + Input.AvatarImage.FileName;
+            var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+            using (var fileStream = new FileStream(filePath, FileMode.Create))
+            {
+                await Input.AvatarImage.CopyToAsync(fileStream);
+            }
+
+            user.AvatarUrl = "/images/avatars/" + uniqueFileName;
+            await _userManager.UpdateAsync(user);
         }
 
         await _signInManager.RefreshSignInAsync(user);

@@ -5,11 +5,22 @@
 <ul class="navbar-nav">
 @if (SignInManager.IsSignedIn(User))
 {
-    <li class="nav-item">
-        <a class="nav-link text-white fw-bold hover-opacity" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Xin chào @User.Identity?.Name!</a>
+    var currentUser = await UserManager.GetUserAsync(User);
+    var displayName = currentUser?.FullName ?? User.Identity?.Name;
+
+    <li class="nav-item d-flex align-items-center">
+        @if (!string.IsNullOrEmpty(currentUser?.AvatarUrl))
+        {
+            <img src="@currentUser.AvatarUrl" alt="Avatar" class="rounded-circle me-2" style="width: 30px; height: 30px; object-fit: cover;" />
+        }
+        else
+        {
+            <img src="https://ui-avatars.com/api/?name=@displayName&background=random" alt="Avatar" class="rounded-circle me-2" style="width: 30px; height: 30px; object-fit: cover;" />
+        }
+        <a class="nav-link text-white fw-bold hover-opacity p-0" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Xin chào @displayName!</a>
     </li>
     <li class="nav-item">
-        <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+        <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Product", new { area = "" })">
             <button type="submit" class="nav-link btn btn-link text-white fw-bold hover-opacity" style="border: none; background: none; margin: 0; padding-left: 10px;">Đăng xuất</button>
         </form>
     </li>

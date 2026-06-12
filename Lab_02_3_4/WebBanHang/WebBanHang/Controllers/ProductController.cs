@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using WebBanHang.Models;
 using WebBanHang.Repositories;
 using System.Text.Json; // Khai báo thêm để xử lý ép chuỗi JSON cho Session
+using Microsoft.AspNetCore.Authorization;
 
 namespace WebBanHang.Controllers
 {
@@ -38,6 +39,7 @@ namespace WebBanHang.Controllers
         }
 
         // 3. Giao diện Thêm sản phẩm (GET)
+        [Authorize(Roles = SD.Role_Admin)]
         public async Task<IActionResult> Add()
         {
             var categories = await _categoryRepository.GetAllAsync();
@@ -47,6 +49,7 @@ namespace WebBanHang.Controllers
 
         // 4. Xử lý Thêm sản phẩm có Upload ảnh (POST)
         [HttpPost]
+        [Authorize(Roles = SD.Role_Admin)]
         public async Task<IActionResult> Add(Product product, IFormFile? Image, List<IFormFile>? imageUrls)
         {
             if (ModelState.IsValid)
@@ -96,6 +99,7 @@ namespace WebBanHang.Controllers
         }
 
         // 5. Giao diện Cập nhật sản phẩm (GET)
+        [Authorize(Roles = SD.Role_Admin)]
         public async Task<IActionResult> Update(int id)
         {
             var product = await _productRepository.GetByIdAsync(id);
@@ -111,6 +115,7 @@ namespace WebBanHang.Controllers
 
         // 6. Xử lý Cập nhật sản phẩm có Upload ảnh (POST)
         [HttpPost]
+        [Authorize(Roles = SD.Role_Admin)]
         public async Task<IActionResult> Update(int id, Product product, IFormFile? Image, List<IFormFile>? imageUrls)
         {
             ModelState.Remove("ImageUrl"); // Loại bỏ xác thực ModelState cho ImageUrl
@@ -166,6 +171,7 @@ namespace WebBanHang.Controllers
         }
 
         // 7. Giao diện Xác nhận xóa (GET)
+        [Authorize(Roles = SD.Role_Admin)]
         public async Task<IActionResult> Delete(int id)
         {
             var product = await _productRepository.GetByIdAsync(id);
@@ -178,6 +184,7 @@ namespace WebBanHang.Controllers
 
         // 8. Xử lý Xóa sản phẩm (POST)
         [HttpPost, ActionName("Delete")]
+        [Authorize(Roles = SD.Role_Admin)]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             await _productRepository.DeleteAsync(id);

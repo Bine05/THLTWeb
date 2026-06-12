@@ -9,11 +9,34 @@
 <partial name="_StatusMessage" for="StatusMessage" />
 <div class="row">
     <div class="col-md-6">
-        <form id="profile-form" method="post">
+        <form id="profile-form" method="post" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+            
+            <div class="mb-3 text-center">
+                @if (!string.IsNullOrEmpty(Model.AvatarUrl))
+                {
+                    <img src="@Model.AvatarUrl" alt="Avatar" class="rounded-circle" style="width: 150px; height: 150px; object-fit: cover;" />
+                }
+                else
+                {
+                    <img src="https://ui-avatars.com/api/?name=@Model.Username&background=random" alt="Avatar" class="rounded-circle" style="width: 150px; height: 150px; object-fit: cover;" />
+                }
+            </div>
+            
+            <div class="mb-3">
+                <label asp-for="Input.AvatarImage" class="form-label"></label>
+                <input asp-for="Input.AvatarImage" class="form-control" type="file" accept="image/*" />
+                <span asp-validation-for="Input.AvatarImage" class="text-danger"></span>
+            </div>
+
             <div class="form-floating mb-3">
                 <input asp-for="Username" class="form-control" placeholder="Please choose your username." disabled />
                 <label asp-for="Username" class="form-label"></label>
+            </div>
+            <div class="form-floating mb-3">
+                <input asp-for="Input.FullName" class="form-control" placeholder="Please enter your full name."/>
+                <label asp-for="Input.FullName" class="form-label"></label>
+                <span asp-validation-for="Input.FullName" class="text-danger"></span>
             </div>
             <div class="form-floating mb-3">
                 <input asp-for="Input.PhoneNumber" class="form-control" placeholder="Please enter your phone number."/>

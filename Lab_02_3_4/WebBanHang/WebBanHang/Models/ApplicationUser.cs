@@ -9,5 +9,6 @@ namespace WebBanHang.Models
         public string FullName { get; set; }
         public string? Address { get; set; }
         public string? Age { get; set; }
+        public string? AvatarUrl { get; set; }
     }
 }

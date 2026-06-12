@@ -1,11 +1,12 @@
 {
   "ExpandedNodes": [
     "",
-    "\\Lab_02",
-    "\\Lab_02\\WebBanHang",
-    "\\Lab_02\\WebBanHang\\WebBanHang",
-    "\\Lab_02\\WebBanHang\\WebBanHang\\Controllers"
+    "\\Lab_02_3_4",
+    "\\Lab_02_3_4\\WebBanHang",
+    "\\Lab_02_3_4\\WebBanHang\\WebBanHang",
+    "\\Lab_02_3_4\\WebBanHang\\WebBanHang\\Views",
+    "\\Lab_02_3_4\\WebBanHang\\WebBanHang\\Views\\Home"
   ],
-  "SelectedNode": "\\Lab_02\\WebBanHang\\WebBanHang\\Controllers\\ProductController.cs",
+  "SelectedNode": "\\Lab_02_3_4\\WebBanHang\\WebBanHang\\Views\\Home\\Privacy.cshtml",
   "PreviewInSolutionExplorer": false
 }

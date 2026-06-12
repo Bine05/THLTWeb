@@ -2,13 +2,16 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using WebBanHang.Models;
 using WebBanHang.Repositories;
+using Microsoft.AspNetCore.Identity.UI.Services;
+using WebBanHang.Services;
+using WebBanHang.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = false)
     .AddDefaultTokenProviders()
     .AddDefaultUI()
     .AddEntityFrameworkStores<ApplicationDbContext>();
@@ -25,6 +28,7 @@ builder.Services.AddRazorPages();
 builder.Services.AddControllersWithViews();
 builder.Services.AddScoped<IProductRepository, EFProductRepository>();
 builder.Services.AddScoped<ICategoryRepository, EFCategoryRepository>();
+builder.Services.AddTransient<IEmailSender, EmailSender>();
 
 // 1. CẬP NHẬT: Thêm bộ nhớ đệm và cấu hình dịch vụ Session vào đây
 builder.Services.AddDistributedMemoryCache();
@@ -36,6 +40,12 @@ builder.Services.AddSession(options =>
 });
 
 var app = builder.Build();
+
+// using (var scope = app.Services.CreateScope())
+// {
+//     var services = scope.ServiceProvider;
+//     await SeedData.InitializeAsync(services);
+// }
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
