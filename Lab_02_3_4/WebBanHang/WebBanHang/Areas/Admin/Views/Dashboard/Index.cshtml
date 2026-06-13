@@ -1,0 +1,152 @@
+@{
+    ViewData["Title"] = "Dashboard Doanh Thu";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    var labels = System.Text.Json.JsonSerializer.Serialize(ViewBag.ChartLabels);
+    var data = System.Text.Json.JsonSerializer.Serialize(ViewBag.ChartData);
+    var topProducts = ViewBag.TopProducts as IEnumerable<dynamic>;
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold"><i class="bi bi-speedometer2 me-2"></i>Tổng quan kinh doanh</h2>
+        <span class="text-muted"><i class="bi bi-calendar3"></i> Cập nhật lúc: @DateTime.Now.ToString("dd/MM/yyyy HH:mm")</span>
+    </div>
+
+    <!-- Hàng KPI -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card shadow-sm border-0 bg-primary text-white h-100">
+                <div class="card-body">
+                    <h6 class="text-white-50 text-uppercase fw-bold"><i class="bi bi-currency-dollar me-1"></i>Tổng doanh thu</h6>
+                    <h3 class="mb-0 fw-bold">@(((decimal)ViewBag.TotalRevenue).ToString("N0")) đ</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card shadow-sm border-0 bg-success text-white h-100">
+                <div class="card-body">
+                    <h6 class="text-white-50 text-uppercase fw-bold"><i class="bi bi-bag-check me-1"></i>Tổng đơn hàng</h6>
+                    <h3 class="mb-0 fw-bold">@ViewBag.TotalOrders</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card shadow-sm border-0 bg-info text-white h-100">
+                <div class="card-body">
+                    <h6 class="text-white-50 text-uppercase fw-bold"><i class="bi bi-basket me-1"></i>AOV (TB 1 đơn)</h6>
+                    <h3 class="mb-0 fw-bold">@(((decimal)ViewBag.AOV).ToString("N0")) đ</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card shadow-sm border-0 bg-warning text-dark h-100">
+                <div class="card-body">
+                    <h6 class="text-dark-50 text-uppercase fw-bold"><i class="bi bi-graph-up-arrow me-1"></i>Tỷ lệ chuyển đổi</h6>
+                    <h3 class="mb-0 fw-bold">@ViewBag.ConversionRate %</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Biểu đồ Chart.js -->
+        <div class="col-lg-8 mb-4">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-header bg-white py-3 border-bottom-0">
+                    <h5 class="fw-bold mb-0">Xu hướng doanh thu (7 ngày qua)</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="revenueChart" height="100"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bảng xếp hạng Top Sản phẩm -->
+        <div class="col-lg-4 mb-4">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-header bg-white py-3 border-bottom-0">
+                    <h5 class="fw-bold mb-0"><i class="bi bi-fire text-danger me-2"></i>Top Sản phẩm bán chạy</h5>
+                </div>
+                <div class="card-body p-0">
+                    <ul class="list-group list-group-flush">
+                        @if (topProducts != null)
+                        {
+                            int rank = 1;
+                            foreach (var p in topProducts)
+                            {
+                                <li class="list-group-item d-flex justify-content-between align-items-center p-3">
+                                    <div class="d-flex align-items-center">
+                                        <div class="me-3 fw-bold fs-5 @(rank == 1 ? "text-warning" : rank == 2 ? "text-secondary" : rank == 3 ? "text-danger" : "text-muted")">
+                                            #@rank
+                                        </div>
+                                        @if (!string.IsNullOrEmpty(p.ImageUrl))
+                                        {
+                                            <img src="@p.ImageUrl" style="width: 40px; height: 40px; object-fit: contain;" class="rounded border me-2" />
+                                        }
+                                        <div>
+                                            <h6 class="my-0 fw-bold text-truncate" style="max-width: 150px;">@p.ProductName</h6>
+                                            <small class="text-muted">Đã bán: @p.TotalQuantitySold</small>
+                                        </div>
+                                    </div>
+                                    <span class="text-success fw-bold">@p.TotalRevenue.ToString("N0")đ</span>
+                                </li>
+                                rank++;
+                            }
+                        }
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var ctx = document.getElementById('revenueChart').getContext('2d');
+            var chartLabels = @Html.Raw(labels);
+            var chartData = @Html.Raw(data);
+
+            var gradient = ctx.createLinearGradient(0, 0, 0, 400);
+            gradient.addColorStop(0, 'rgba(13, 110, 253, 0.5)'); // primary color with opacity
+            gradient.addColorStop(1, 'rgba(13, 110, 253, 0.05)');
+
+            var myChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: chartLabels,
+                    datasets: [{
+                        label: 'Doanh thu (VNĐ)',
+                        data: chartData,
+                        backgroundColor: gradient,
+                        borderColor: 'rgba(13, 110, 253, 1)',
+                        borderWidth: 2,
+                        pointBackgroundColor: '#fff',
+                        pointBorderColor: 'rgba(13, 110, 253, 1)',
+                        pointRadius: 4,
+                        fill: true,
+                        tension: 0.4 // làm cong đường line
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return value.toLocaleString('vi-VN') + ' đ';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+}

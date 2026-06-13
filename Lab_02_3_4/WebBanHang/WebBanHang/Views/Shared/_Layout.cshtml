@@ -73,6 +73,9 @@
                         @if (User.IsInRole(SD.Role_Admin))
                         {
                             <li class="nav-item">
+                                <a class="nav-link text-white fw-bold hover-opacity" asp-area="Admin" asp-controller="Dashboard" asp-action="Index">Doanh thu</a>
+                            </li>
+                            <li class="nav-item">
                                 <a class="nav-link text-white fw-bold hover-opacity" asp-area="Admin" asp-controller="Product" asp-action="Index">Quản lý sản phẩm</a>
                             </li>
                             <li class="nav-item">
@@ -85,20 +88,31 @@
                         <li class="nav-item">
                             <a class="nav-link text-white fw-semibold hover-opacity" asp-area="" asp-controller="Home" asp-action="Privacy">Chính Sách</a>
                         </li>
+                        @if (User.Identity.IsAuthenticated && !User.IsInRole(SD.Role_Admin))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-white fw-bold hover-opacity" asp-area="" asp-controller="CustomerOrder" asp-action="Index">
+                                    <i class="bi bi-clock-history me-1"></i>Lịch sử mua hàng
+                                </a>
+                            </li>
+                        }
                     </ul>
                     <ul class="navbar-nav">
-                        <li class="nav-item">
-                            <a class="nav-link text-white fw-bold hover-opacity" asp-area="" asp-controller="Cart" asp-action="Index">
-                                <i class="bi bi-cart3 fs-5 position-relative">
-                                    @if(totalItemsInCart > 0)
-                                    {
-                                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.6rem;">
-                                            @totalItemsInCart
-                                        </span>
-                                    }
-                                </i> Giỏ Hàng
-                            </a>
-                        </li>
+                        @if (!User.IsInRole(SD.Role_Admin))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-white fw-bold hover-opacity" asp-area="" asp-controller="Cart" asp-action="Index">
+                                    <i class="bi bi-cart3 fs-5 position-relative">
+                                        @if(totalItemsInCart > 0)
+                                        {
+                                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.6rem;">
+                                                @totalItemsInCart
+                                            </span>
+                                        }
+                                    </i> Giỏ Hàng
+                                </a>
+                            </li>
+                        }
                     </ul>
                     <partial name="_LoginPartial" />
                 </div>

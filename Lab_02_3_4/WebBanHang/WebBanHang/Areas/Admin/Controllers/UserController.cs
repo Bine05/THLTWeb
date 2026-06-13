@@ -17,8 +17,10 @@ namespace WebBanHang.Areas.Admin.Controllers
             _userManager = userManager;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string msg = null, string err = null)
         {
+            ViewBag.Message = msg;
+            ViewBag.Error = err;
             var users = await _userManager.Users.ToListAsync();
             return View(users);
         }
@@ -29,25 +31,36 @@ namespace WebBanHang.Areas.Admin.Controllers
             var user = await _userManager.FindByIdAsync(id);
             if (user == null)
             {
-                return NotFound();
+                return RedirectToAction(nameof(Index), new { err = "Không tìm thấy tài khoản." });
             }
 
-            user.LockoutEnabled = true;
+            var enableResult = await _userManager.SetLockoutEnabledAsync(user, true);
+            if (!enableResult.Succeeded)
+            {
+                return RedirectToAction(nameof(Index), new { err = "Lỗi khi bật LockoutEnabled: " + string.Join(", ", enableResult.Errors.Select(e => e.Description)) });
+            }
 
-            if (user.LockoutEnd != null && user.LockoutEnd > DateTimeOffset.Now)
+            IdentityResult result;
+            string successMsg = "";
+            if (user.LockoutEnd != null && user.LockoutEnd > DateTimeOffset.UtcNow)
             {
                 // Mở khóa
-                user.LockoutEnd = DateTimeOffset.Now;
+                result = await _userManager.SetLockoutEndDateAsync(user, DateTimeOffset.UtcNow);
+                successMsg = "Mở khóa thành công!";
             }
             else
             {
                 // Khóa 100 năm
-                user.LockoutEnd = DateTimeOffset.Now.AddYears(100);
+                result = await _userManager.SetLockoutEndDateAsync(user, DateTimeOffset.UtcNow.AddYears(100));
+                successMsg = "Khóa tài khoản thành công!";
             }
 
-            await _userManager.UpdateAsync(user);
+            if (!result.Succeeded)
+            {
+                return RedirectToAction(nameof(Index), new { err = "Lỗi khi khóa/mở khóa: " + string.Join(", ", result.Errors.Select(e => e.Description)) });
+            }
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Index), new { msg = successMsg });
         }
     }
 }

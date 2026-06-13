@@ -21,9 +21,33 @@ namespace WebBanHang.Controllers
         }
 
         // 1. Hiển thị danh sách sản phẩm
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchString, decimal? minPrice, decimal? maxPrice)
         {
             var products = await _productRepository.GetAllAsync();
+
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                products = products.Where(p => 
+                    p.Name.Equals(searchString, StringComparison.OrdinalIgnoreCase) || 
+                    p.Name.Contains(searchString + " ", StringComparison.OrdinalIgnoreCase) ||
+                    (p.Category != null && p.Category.Name.Equals(searchString, StringComparison.OrdinalIgnoreCase))
+                );
+            }
+
+            if (minPrice.HasValue)
+            {
+                products = products.Where(p => p.FinalPrice >= minPrice.Value);
+            }
+
+            if (maxPrice.HasValue)
+            {
+                products = products.Where(p => p.FinalPrice <= maxPrice.Value);
+            }
+
+            ViewBag.SearchString = searchString;
+            ViewBag.MinPrice = minPrice;
+            ViewBag.MaxPrice = maxPrice;
+
             return View(products);
         }
 

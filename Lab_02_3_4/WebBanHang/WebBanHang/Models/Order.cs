@@ -24,6 +24,14 @@ namespace WebBanHang.Models
 
         public decimal TotalAmount { get; set; }
 
+        // Mới thêm cho Module 1
+        public string PaymentMethod { get; set; } = "Chuyển khoản"; // Mặc định
+        public decimal DiscountAmount { get; set; } = 0;
+
+        // Mới thêm cho Module 2
+        public string? UserId { get; set; }
+        public string OrderStatus { get; set; } = "Đã xác nhận"; // Đã xác nhận -> Đã gửi hàng -> Đang vận chuyển -> Đã giao
+
         public List<OrderDetail>? OrderDetails { get; set; }
     }
 }

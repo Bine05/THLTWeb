@@ -14,13 +14,20 @@ namespace WebBanHang.Controllers
             _productRepository = productRepository;
         }
 
-        // 1. Trang hiển thị danh sách giỏ hàng (localhost:xxxx/Cart hoặc localhost:xxxx/Cart/Index)
-        public IActionResult Index()
+        // 1. Trang hiển thị danh sách giỏ hàng
+        public async Task<IActionResult> Index()
         {
-            // Lấy danh sách giỏ hàng từ Session ra
             var cart = HttpContext.Session.GetObjectFromJson<List<CartItem>>("Cart") ?? new List<CartItem>();
+            
+            // Lấy 4 sản phẩm ngẫu nhiên cho phần "Có thể bạn cũng thích"
+            var allProducts = await _productRepository.GetAllAsync();
+            var suggestedProducts = allProducts.OrderBy(x => Guid.NewGuid()).Take(4).ToList();
+            ViewBag.SuggestedProducts = suggestedProducts;
 
-            // Trả về View đúng thư mục Views/Cart/Index.cshtml để hiển thị bảng kê tính tiền
+            // Lấy mã giảm giá từ session (nếu có)
+            var discount = HttpContext.Session.GetInt32("DiscountAmount") ?? 0;
+            ViewBag.DiscountAmount = discount;
+
             return View(cart);
         }
 
@@ -82,6 +89,79 @@ namespace WebBanHang.Controllers
 
             return RedirectToAction("Index");
         }
+
+        // --- CÁC HÀM AJAX MỚI ---
+
+        [HttpPost]
+        public IActionResult UpdateQuantity(int id, int quantity)
+        {
+            var cart = HttpContext.Session.GetObjectFromJson<List<CartItem>>("Cart") ?? new List<CartItem>();
+            var cartItem = cart.FirstOrDefault(c => c.ProductId == id);
+
+            if (cartItem != null)
+            {
+                if (quantity > 0)
+                {
+                    cartItem.Quantity = quantity;
+                }
+                else
+                {
+                    cart.Remove(cartItem);
+                }
+                HttpContext.Session.SetObjectAsJson("Cart", cart);
+            }
+
+            var discount = HttpContext.Session.GetInt32("DiscountAmount") ?? 0;
+            var subtotal = cart.Sum(c => c.Price * c.Quantity);
+            var total = subtotal - discount;
+            if (total < 0) total = 0;
+
+            return Json(new { 
+                success = true, 
+                itemTotal = cartItem != null ? cartItem.Price * cartItem.Quantity : 0, 
+                subtotal = subtotal,
+                total = total 
+            });
+        }
+
+        [HttpPost]
+        public IActionResult ApplyCoupon(string code)
+        {
+            var cart = HttpContext.Session.GetObjectFromJson<List<CartItem>>("Cart") ?? new List<CartItem>();
+            if (!cart.Any()) return Json(new { success = false, message = "Giỏ hàng trống!" });
+
+            // Logic mã giảm giá cơ bản
+            int discountAmount = 0;
+            string message = "";
+            bool success = true;
+
+            if (code == "GIAM10K")
+            {
+                discountAmount = 10000;
+                message = "Đã áp dụng mã giảm giá 10,000đ!";
+            }
+            else if (code == "GIAM20K")
+            {
+                discountAmount = 20000;
+                message = "Đã áp dụng mã giảm giá 20,000đ!";
+            }
+            else
+            {
+                success = false;
+                message = "Mã giảm giá không hợp lệ!";
+            }
+
+            if (success)
+            {
+                HttpContext.Session.SetInt32("DiscountAmount", discountAmount);
+            }
+
+            var subtotal = cart.Sum(c => c.Price * c.Quantity);
+            var total = subtotal - discountAmount;
+            if (total < 0) total = 0;
+
+            return Json(new { success = success, message = message, discountAmount = discountAmount, total = total });
+        }
         // 4. Trang Checkout (GET)
         public IActionResult Checkout()
         {
@@ -90,12 +170,14 @@ namespace WebBanHang.Controllers
             {
                 return RedirectToAction("Index");
             }
+            ViewBag.DiscountAmount = HttpContext.Session.GetInt32("DiscountAmount") ?? 0;
+            ViewBag.Cart = cart;
             return View(new Order());
         }
 
         // 5. Xử lý Checkout (POST)
         [HttpPost]
-        public async Task<IActionResult> Checkout(Order order, [FromServices] ApplicationDbContext context)
+        public async Task<IActionResult> Checkout(Order order, [FromServices] ApplicationDbContext context, [FromServices] Microsoft.AspNetCore.Identity.UserManager<ApplicationUser> userManager)
         {
             var cart = HttpContext.Session.GetObjectFromJson<List<CartItem>>("Cart") ?? new List<CartItem>();
             if (!cart.Any())
@@ -105,10 +187,29 @@ namespace WebBanHang.Controllers
 
             if (ModelState.IsValid)
             {
-                order.OrderDate = DateTime.Now;
-                order.TotalAmount = cart.Sum(c => c.Price * c.Quantity);
-                order.OrderDetails = new List<OrderDetail>();
+                var discount = HttpContext.Session.GetInt32("DiscountAmount") ?? 0;
+                var subtotal = cart.Sum(c => c.Price * c.Quantity);
+                var total = subtotal - discount;
+                if (total < 0) total = 0;
 
+                order.OrderDate = DateTime.Now;
+                order.TotalAmount = total;
+                order.DiscountAmount = discount;
+                
+                // Module 2: Lưu UserId và cộng điểm thưởng
+                if (User.Identity != null && User.Identity.IsAuthenticated)
+                {
+                    var user = await userManager.GetUserAsync(User);
+                    if (user != null)
+                    {
+                        order.UserId = user.Id;
+                        // Cộng điểm (VD: 10,000đ = 1 điểm)
+                        user.RewardPoints += (int)(total / 10000);
+                        await userManager.UpdateAsync(user);
+                    }
+                }
+                
+                order.OrderDetails = new List<OrderDetail>();
                 foreach (var item in cart)
                 {
                     order.OrderDetails.Add(new OrderDetail
@@ -122,12 +223,15 @@ namespace WebBanHang.Controllers
                 context.Orders.Add(order);
                 await context.SaveChangesAsync();
 
-                // Xóa giỏ hàng
+                // Xóa giỏ hàng và mã giảm giá
                 HttpContext.Session.Remove("Cart");
+                HttpContext.Session.Remove("DiscountAmount");
 
                 return RedirectToAction("Success", new { id = order.Id });
             }
 
+            ViewBag.DiscountAmount = HttpContext.Session.GetInt32("DiscountAmount") ?? 0;
+            ViewBag.Cart = cart;
             return View(order);
         }
 

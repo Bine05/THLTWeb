@@ -10,5 +10,8 @@ namespace WebBanHang.Models
         public string? Address { get; set; }
         public string? Age { get; set; }
         public string? AvatarUrl { get; set; }
+
+        // Mới thêm cho Module 2
+        public int RewardPoints { get; set; } = 0;
     }
 }
